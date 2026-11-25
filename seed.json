@@ -1,0 +1,1053 @@
+{
+ "_ref": "2026-11-25",
+ "t": {
+  "users": [
+   {
+    "name": "Service Manager",
+    "username": "admin",
+    "password": "admin123",
+    "role": "admin",
+    "phone": "",
+    "plan": "",
+    "planExp": "",
+    "id": 1
+   },
+   {
+    "name": "Rahul Sharma",
+    "username": "rahul",
+    "password": "cust123",
+    "role": "customer",
+    "phone": "9845012345",
+    "plan": "",
+    "planExp": "",
+    "id": 2
+   },
+   {
+    "name": "Ravi Kumar",
+    "username": "ravi",
+    "password": "mech123",
+    "role": "mechanic",
+    "phone": "9900112233",
+    "plan": "",
+    "planExp": "",
+    "id": 3
+   },
+   {
+    "name": "Meena Iyer",
+    "username": "meena",
+    "password": "cust123",
+    "role": "customer",
+    "phone": "9741098765",
+    "plan": "Gold",
+    "planExp": "2027-09-25",
+    "id": 4
+   },
+   {
+    "name": "Suresh Gowda",
+    "username": "suresh",
+    "password": "mech123",
+    "role": "mechanic",
+    "phone": "9886044556",
+    "plan": "",
+    "planExp": "",
+    "id": 5
+   }
+  ],
+  "vehicles": [
+   {
+    "uid": 2,
+    "reg": "KA01MX2023",
+    "type": "Car",
+    "model": "Honda City",
+    "year": 2021,
+    "fuel": "Petrol",
+    "odo": 24800,
+    "ins": "2027-04-24",
+    "puc": "2027-02-03",
+    "id": 1
+   },
+   {
+    "uid": 2,
+    "reg": "KA05NB4471",
+    "type": "Car",
+    "model": "Maruti Swift",
+    "year": 2019,
+    "fuel": "Diesel",
+    "odo": 61200,
+    "ins": "2026-11-05",
+    "puc": "2026-12-15",
+    "id": 2
+   },
+   {
+    "uid": 4,
+    "reg": "KA03HK9012",
+    "type": "SUV",
+    "model": "Hyundai Creta",
+    "year": 2020,
+    "fuel": "Petrol",
+    "odo": 33400,
+    "ins": "2027-07-23",
+    "puc": "2027-09-21",
+    "id": 3
+   },
+   {
+    "uid": 2,
+    "reg": "KA53ER5588",
+    "type": "Bike",
+    "model": "Royal Enfield Classic 350",
+    "year": 2022,
+    "fuel": "Petrol",
+    "odo": 12400,
+    "ins": "2027-02-23",
+    "puc": "2026-11-20",
+    "id": 4
+   }
+  ],
+  "catalog": [
+   {
+    "name": "Oil change",
+    "price": 600,
+    "km": 5000,
+    "mo": 6,
+    "id": 1
+   },
+   {
+    "name": "General service",
+    "price": 1500,
+    "km": 10000,
+    "mo": 12,
+    "id": 2
+   },
+   {
+    "name": "Brake service",
+    "price": 900,
+    "km": 20000,
+    "mo": 12,
+    "id": 3
+   },
+   {
+    "name": "Wheel alignment",
+    "price": 700,
+    "km": 10000,
+    "mo": 0,
+    "id": 4
+   },
+   {
+    "name": "AC service",
+    "price": 1200,
+    "km": 0,
+    "mo": 12,
+    "id": 5
+   },
+   {
+    "name": "Battery check",
+    "price": 300,
+    "km": 0,
+    "mo": 6,
+    "id": 6
+   },
+   {
+    "name": "Tyre rotation",
+    "price": 400,
+    "km": 8000,
+    "mo": 0,
+    "id": 7
+   },
+   {
+    "name": "Engine repair",
+    "price": 3000,
+    "km": 0,
+    "mo": 0,
+    "id": 8
+   }
+  ],
+  "parts": [
+   {
+    "name": "Engine oil (1 L)",
+    "price": 520,
+    "stock": 40,
+    "reorder": 10,
+    "id": 1
+   },
+   {
+    "name": "Oil filter",
+    "price": 280,
+    "stock": 25,
+    "reorder": 8,
+    "id": 2
+   },
+   {
+    "name": "Brake pads (set)",
+    "price": 1800,
+    "stock": 4,
+    "reorder": 5,
+    "id": 3
+   },
+   {
+    "name": "Air filter",
+    "price": 450,
+    "stock": 14,
+    "reorder": 6,
+    "id": 4
+   },
+   {
+    "name": "Wiper blades",
+    "price": 350,
+    "stock": 12,
+    "reorder": 5,
+    "id": 5
+   },
+   {
+    "name": "Battery 55Ah",
+    "price": 5400,
+    "stock": 3,
+    "reorder": 3,
+    "id": 6
+   },
+   {
+    "name": "Coolant (1 L)",
+    "price": 300,
+    "stock": 18,
+    "reorder": 6,
+    "id": 7
+   },
+   {
+    "name": "Spark plug",
+    "price": 240,
+    "stock": 30,
+    "reorder": 8,
+    "id": 8
+   }
+  ],
+  "jobs": [
+   {
+    "vid": 1,
+    "uid": 2,
+    "svc": 1,
+    "mech": 3,
+    "date": "2026-06-28",
+    "slot": "09:00",
+    "pickup": 0,
+    "issue": "Routine oil change",
+    "status": "Delivered",
+    "odoIn": 20500,
+    "labour": 600,
+    "extra": [],
+    "appr": "",
+    "insp": {
+     "items": [
+      [
+       "Engine oil level",
+       "OK"
+      ],
+      [
+       "Brake pads",
+       "OK"
+      ],
+      [
+       "Tyre tread",
+       "OK"
+      ],
+      [
+       "Battery health",
+       "OK"
+      ],
+      [
+       "Lights and indicators",
+       "OK"
+      ],
+      [
+       "Coolant level",
+       "OK"
+      ],
+      [
+       "Suspension",
+       "OK"
+      ],
+      [
+       "Wipers",
+       "OK"
+      ],
+      [
+       "Air filter",
+       "OK"
+      ],
+      [
+       "Belts and hoses",
+       "OK"
+      ]
+     ],
+     "score": 100
+    },
+    "parts": [
+     {
+      "pid": 1,
+      "name": "Engine oil (1 L)",
+      "qty": 4,
+      "price": 520
+     },
+     {
+      "pid": 2,
+      "name": "Oil filter",
+      "qty": 1,
+      "price": 280
+     }
+    ],
+    "notes": "",
+    "warr": "2026-09-26",
+    "id": 1
+   },
+   {
+    "vid": 1,
+    "uid": 2,
+    "svc": 3,
+    "mech": 3,
+    "date": "2026-08-27",
+    "slot": "12:00",
+    "pickup": 0,
+    "issue": "Squeaking brakes",
+    "status": "Delivered",
+    "odoIn": 22000,
+    "labour": 900,
+    "extra": [
+     {
+      "n": "Brake fluid flush",
+      "c": 600
+     }
+    ],
+    "appr": "Approved",
+    "insp": {
+     "items": [
+      [
+       "Engine oil level",
+       "OK"
+      ],
+      [
+       "Brake pads",
+       "Attention"
+      ],
+      [
+       "Tyre tread",
+       "OK"
+      ],
+      [
+       "Battery health",
+       "Urgent"
+      ],
+      [
+       "Lights and indicators",
+       "OK"
+      ],
+      [
+       "Coolant level",
+       "OK"
+      ],
+      [
+       "Suspension",
+       "Attention"
+      ],
+      [
+       "Wipers",
+       "OK"
+      ],
+      [
+       "Air filter",
+       "OK"
+      ],
+      [
+       "Belts and hoses",
+       "OK"
+      ]
+     ],
+     "score": 80
+    },
+    "parts": [
+     {
+      "pid": 3,
+      "name": "Brake pads (set)",
+      "qty": 1,
+      "price": 1800
+     }
+    ],
+    "notes": "",
+    "warr": "2026-11-25",
+    "id": 2
+   },
+   {
+    "vid": 2,
+    "uid": 2,
+    "svc": 1,
+    "mech": 5,
+    "date": "2026-07-28",
+    "slot": "14:00",
+    "pickup": 0,
+    "issue": "",
+    "status": "Delivered",
+    "odoIn": 55000,
+    "labour": 600,
+    "extra": [],
+    "appr": "",
+    "insp": {
+     "items": [
+      [
+       "Engine oil level",
+       "OK"
+      ],
+      [
+       "Brake pads",
+       "OK"
+      ],
+      [
+       "Tyre tread",
+       "OK"
+      ],
+      [
+       "Battery health",
+       "OK"
+      ],
+      [
+       "Lights and indicators",
+       "OK"
+      ],
+      [
+       "Coolant level",
+       "OK"
+      ],
+      [
+       "Suspension",
+       "OK"
+      ],
+      [
+       "Wipers",
+       "OK"
+      ],
+      [
+       "Air filter",
+       "OK"
+      ],
+      [
+       "Belts and hoses",
+       "OK"
+      ]
+     ],
+     "score": 100
+    },
+    "parts": [
+     {
+      "pid": 1,
+      "name": "Engine oil (1 L)",
+      "qty": 3,
+      "price": 520
+     },
+     {
+      "pid": 2,
+      "name": "Oil filter",
+      "qty": 1,
+      "price": 280
+     }
+    ],
+    "notes": "",
+    "warr": "2026-10-26",
+    "id": 3
+   },
+   {
+    "vid": 3,
+    "uid": 4,
+    "svc": 1,
+    "mech": 3,
+    "date": "2026-04-29",
+    "slot": "10:30",
+    "pickup": 0,
+    "issue": "",
+    "status": "Delivered",
+    "odoIn": 26000,
+    "labour": 780,
+    "extra": [],
+    "appr": "",
+    "insp": {
+     "items": [
+      [
+       "Engine oil level",
+       "OK"
+      ],
+      [
+       "Brake pads",
+       "OK"
+      ],
+      [
+       "Tyre tread",
+       "OK"
+      ],
+      [
+       "Battery health",
+       "OK"
+      ],
+      [
+       "Lights and indicators",
+       "OK"
+      ],
+      [
+       "Coolant level",
+       "OK"
+      ],
+      [
+       "Suspension",
+       "OK"
+      ],
+      [
+       "Wipers",
+       "OK"
+      ],
+      [
+       "Air filter",
+       "OK"
+      ],
+      [
+       "Belts and hoses",
+       "OK"
+      ]
+     ],
+     "score": 100
+    },
+    "parts": [
+     {
+      "pid": 1,
+      "name": "Engine oil (1 L)",
+      "qty": 3,
+      "price": 520
+     },
+     {
+      "pid": 2,
+      "name": "Oil filter",
+      "qty": 1,
+      "price": 280
+     }
+    ],
+    "notes": "",
+    "warr": "2026-07-28",
+    "id": 4
+   },
+   {
+    "vid": 4,
+    "uid": 2,
+    "svc": 2,
+    "mech": 3,
+    "date": "2026-08-17",
+    "slot": "10:30",
+    "pickup": 1,
+    "issue": "First free service",
+    "status": "Delivered",
+    "odoIn": 9800,
+    "labour": 750,
+    "extra": [],
+    "appr": "",
+    "insp": {
+     "items": [
+      [
+       "Engine oil level",
+       "OK"
+      ],
+      [
+       "Brake pads",
+       "OK"
+      ],
+      [
+       "Tyre tread",
+       "OK"
+      ],
+      [
+       "Battery health",
+       "OK"
+      ],
+      [
+       "Lights and indicators",
+       "OK"
+      ],
+      [
+       "Coolant level",
+       "OK"
+      ],
+      [
+       "Suspension",
+       "OK"
+      ],
+      [
+       "Wipers",
+       "OK"
+      ],
+      [
+       "Air filter",
+       "OK"
+      ],
+      [
+       "Belts and hoses",
+       "OK"
+      ]
+     ],
+     "score": 100
+    },
+    "parts": [
+     {
+      "pid": 1,
+      "name": "Engine oil (1 L)",
+      "qty": 2,
+      "price": 520
+     },
+     {
+      "pid": 2,
+      "name": "Oil filter",
+      "qty": 1,
+      "price": 280
+     },
+     {
+      "pid": 8,
+      "name": "Spark plug",
+      "qty": 1,
+      "price": 240
+     }
+    ],
+    "notes": "",
+    "warr": "2026-11-15",
+    "id": 5
+   },
+   {
+    "vid": 1,
+    "uid": 2,
+    "svc": 4,
+    "mech": 5,
+    "date": "2026-10-16",
+    "slot": "15:30",
+    "pickup": 0,
+    "issue": "Steering pulls left",
+    "status": "Delivered",
+    "odoIn": 24000,
+    "labour": 700,
+    "extra": [],
+    "appr": "",
+    "insp": {
+     "items": [
+      [
+       "Engine oil level",
+       "OK"
+      ],
+      [
+       "Brake pads",
+       "OK"
+      ],
+      [
+       "Tyre tread",
+       "OK"
+      ],
+      [
+       "Battery health",
+       "OK"
+      ],
+      [
+       "Lights and indicators",
+       "OK"
+      ],
+      [
+       "Coolant level",
+       "OK"
+      ],
+      [
+       "Suspension",
+       "OK"
+      ],
+      [
+       "Wipers",
+       "OK"
+      ],
+      [
+       "Air filter",
+       "OK"
+      ],
+      [
+       "Belts and hoses",
+       "OK"
+      ]
+     ],
+     "score": 100
+    },
+    "parts": [],
+    "notes": "",
+    "warr": "2027-01-14",
+    "id": 6
+   },
+   {
+    "vid": 3,
+    "uid": 4,
+    "svc": 2,
+    "mech": 3,
+    "date": "2026-11-25",
+    "slot": "09:00",
+    "pickup": 0,
+    "issue": "Full service before road trip",
+    "status": "Repairing",
+    "odoIn": 33400,
+    "labour": 1950,
+    "extra": [],
+    "appr": "",
+    "insp": {
+     "items": [
+      [
+       "Engine oil level",
+       "OK"
+      ],
+      [
+       "Brake pads",
+       "Attention"
+      ],
+      [
+       "Tyre tread",
+       "OK"
+      ],
+      [
+       "Battery health",
+       "Urgent"
+      ],
+      [
+       "Lights and indicators",
+       "OK"
+      ],
+      [
+       "Coolant level",
+       "OK"
+      ],
+      [
+       "Suspension",
+       "Attention"
+      ],
+      [
+       "Wipers",
+       "OK"
+      ],
+      [
+       "Air filter",
+       "OK"
+      ],
+      [
+       "Belts and hoses",
+       "OK"
+      ]
+     ],
+     "score": 80
+    },
+    "parts": [],
+    "notes": "",
+    "warr": "",
+    "id": 7
+   },
+   {
+    "vid": 2,
+    "uid": 2,
+    "svc": 3,
+    "mech": 0,
+    "date": "2026-11-27",
+    "slot": "12:00",
+    "pickup": 1,
+    "issue": "Pedal feels soft",
+    "status": "Booked",
+    "odoIn": 61200,
+    "labour": 900,
+    "extra": [],
+    "appr": "",
+    "insp": null,
+    "parts": [],
+    "notes": "",
+    "warr": "",
+    "id": 8
+   },
+   {
+    "vid": 1,
+    "uid": 2,
+    "svc": 5,
+    "mech": 5,
+    "date": "2026-11-24",
+    "slot": "10:30",
+    "pickup": 0,
+    "issue": "AC not cooling",
+    "status": "Ready",
+    "odoIn": 24800,
+    "labour": 1200,
+    "extra": [],
+    "appr": "",
+    "insp": {
+     "items": [
+      [
+       "Engine oil level",
+       "OK"
+      ],
+      [
+       "Brake pads",
+       "OK"
+      ],
+      [
+       "Tyre tread",
+       "OK"
+      ],
+      [
+       "Battery health",
+       "OK"
+      ],
+      [
+       "Lights and indicators",
+       "OK"
+      ],
+      [
+       "Coolant level",
+       "OK"
+      ],
+      [
+       "Suspension",
+       "OK"
+      ],
+      [
+       "Wipers",
+       "OK"
+      ],
+      [
+       "Air filter",
+       "OK"
+      ],
+      [
+       "Belts and hoses",
+       "OK"
+      ]
+     ],
+     "score": 100
+    },
+    "parts": [
+     {
+      "pid": 7,
+      "name": "Coolant (1 L)",
+      "qty": 1,
+      "price": 300
+     }
+    ],
+    "notes": "Gas topped up, cooling restored.",
+    "warr": "",
+    "id": 9
+   },
+   {
+    "vid": 4,
+    "uid": 2,
+    "svc": 7,
+    "mech": 5,
+    "date": "2026-11-25",
+    "slot": "14:00",
+    "pickup": 0,
+    "issue": "Rear wheel wobble",
+    "status": "Approval",
+    "odoIn": 12400,
+    "labour": 200,
+    "extra": [
+     {
+      "n": "Replace chain sprocket",
+      "c": 2200
+     }
+    ],
+    "appr": "",
+    "insp": {
+     "items": [
+      [
+       "Engine oil level",
+       "OK"
+      ],
+      [
+       "Brake pads",
+       "Attention"
+      ],
+      [
+       "Tyre tread",
+       "OK"
+      ],
+      [
+       "Battery health",
+       "Urgent"
+      ],
+      [
+       "Lights and indicators",
+       "OK"
+      ],
+      [
+       "Coolant level",
+       "OK"
+      ],
+      [
+       "Suspension",
+       "Attention"
+      ],
+      [
+       "Wipers",
+       "OK"
+      ],
+      [
+       "Air filter",
+       "OK"
+      ],
+      [
+       "Belts and hoses",
+       "OK"
+      ]
+     ],
+     "score": 80
+    },
+    "parts": [],
+    "notes": "",
+    "warr": "",
+    "id": 10
+   }
+  ],
+  "invoices": [
+   {
+    "jid": 1,
+    "labour": 600,
+    "extra": 0,
+    "parts": 2360,
+    "disc": 0,
+    "gst": 533,
+    "total": 3493,
+    "paid": true,
+    "mode": "UPI",
+    "date": "2026-06-28",
+    "id": 1
+   },
+   {
+    "jid": 2,
+    "labour": 900,
+    "extra": 600,
+    "parts": 1800,
+    "disc": 0,
+    "gst": 594,
+    "total": 3894,
+    "paid": true,
+    "mode": "UPI",
+    "date": "2026-08-27",
+    "id": 2
+   },
+   {
+    "jid": 3,
+    "labour": 600,
+    "extra": 0,
+    "parts": 1840,
+    "disc": 0,
+    "gst": 439,
+    "total": 2879,
+    "paid": true,
+    "mode": "UPI",
+    "date": "2026-07-28",
+    "id": 3
+   },
+   {
+    "jid": 4,
+    "labour": 780,
+    "extra": 0,
+    "parts": 1840,
+    "disc": 156,
+    "gst": 444,
+    "total": 2908,
+    "paid": true,
+    "mode": "UPI",
+    "date": "2026-04-29",
+    "id": 4
+   },
+   {
+    "jid": 5,
+    "labour": 750,
+    "extra": 250,
+    "parts": 1560,
+    "disc": 0,
+    "gst": 461,
+    "total": 3021,
+    "paid": true,
+    "mode": "UPI",
+    "date": "2026-08-17",
+    "id": 5
+   },
+   {
+    "jid": 6,
+    "labour": 700,
+    "extra": 0,
+    "parts": 0,
+    "disc": 0,
+    "gst": 126,
+    "total": 826,
+    "paid": true,
+    "mode": "UPI",
+    "date": "2026-10-16",
+    "id": 6
+   },
+   {
+    "jid": 9,
+    "labour": 1200,
+    "extra": 0,
+    "parts": 300,
+    "disc": 0,
+    "gst": 270,
+    "total": 1770,
+    "paid": false,
+    "mode": "",
+    "date": "2026-11-24",
+    "id": 7
+   }
+  ],
+  "feedback": [
+   {
+    "jid": 1,
+    "rating": 5,
+    "text": "Quick and neat work.",
+    "id": 1
+   },
+   {
+    "jid": 2,
+    "rating": 5,
+    "text": "",
+    "id": 2
+   },
+   {
+    "jid": 3,
+    "rating": 4,
+    "text": "Good, slightly late.",
+    "id": 3
+   },
+   {
+    "jid": 5,
+    "rating": 4,
+    "text": "",
+    "id": 4
+   }
+  ],
+  "notifs": [
+   {
+    "uid": 2,
+    "text": "Estimate ready for your Royal Enfield: approve the extra work to continue.",
+    "ts": "2026-11-25 05:21",
+    "seen": false,
+    "id": 1
+   },
+   {
+    "uid": 2,
+    "text": "Your Honda City AC service is ready for pickup.",
+    "ts": "2026-11-25 05:21",
+    "seen": false,
+    "id": 2
+   },
+   {
+    "uid": 1,
+    "text": "Booking JC-0008 for KA05NB4471 needs a mechanic.",
+    "ts": "2026-11-25 05:21",
+    "seen": false,
+    "id": 3
+   }
+  ],
+  "logs": [
+   {
+    "ts": "2026-11-25 05:21",
+    "actor": "system",
+    "action": "Demo data created",
+    "id": 1
+   }
+  ]
+ }
+}
