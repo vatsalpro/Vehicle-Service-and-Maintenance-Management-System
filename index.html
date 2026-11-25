@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vehicle Service and Maintenance Management System</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+:root{color-scheme:light;--floor:#e4e6e2;--paper:#fcfcfa;--ink:#16202b;--mute:#5a6670;--line:#c8ccc7;--blue:#1c3d6e;--blue2:#e3eaf4;--yel:#f4c20d;--ok:#1f7a4d;--warn:#b45f06;--bad:#b3261e;--pur:#7a3fa0;
+--fd:"Archivo Narrow","Arial Narrow",Arial,sans-serif;--fb:"Public Sans","Segoe UI",Roboto,Arial,sans-serif;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}*{box-sizing:border-box}
+body{margin:0;background:var(--floor);color:var(--ink);font:15.5px/1.5 var(--fb)}
+h1,h2,h3,h4{font-family:var(--fd);margin:0}button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.hidden{display:none!important}.bad{color:var(--bad)}
+.haz{height:8px;background:repeating-linear-gradient(-45deg,var(--yel) 0 14px,#16202b 14px 28px);background-size:40px 100%;animation:haz 1.6s linear infinite}
+@keyframes haz{to{background-position:40px 0}}
+/* welcome */
+.welcome{position:fixed;inset:0;z-index:100;background:var(--paper);display:grid;grid-template-columns:1.1fr .9fr;overflow:auto;transition:transform .9s cubic-bezier(.7,0,.2,1),visibility 0s .9s}
+.welcome.gone{transform:translateY(-105%);visibility:hidden}
+.wl{background:var(--blue);color:#fff;padding:48px clamp(24px,5vw,64px) 0;display:flex;flex-direction:column;position:relative;overflow:hidden;min-height:560px}
+.wl h1{font-size:clamp(44px,6vw,78px);line-height:.95;font-weight:700;max-width:9em}
+.wl h1 span{display:inline-block;animation:word .7s cubic-bezier(.2,.9,.3,1.2) both;animation-delay:calc(var(--i)*140ms + 200ms)}
+@keyframes word{from{opacity:0;transform:translateY(40px) rotate(4deg)}to{opacity:1;transform:none}}
+.wl p{max-width:34em;color:#c9d6ea;margin:18px 0 0;animation:word .8s .9s both}
+.scene{margin-top:auto;width:100%;max-width:560px;cursor:pointer}
+.car{animation:drive 2.2s cubic-bezier(.15,.8,.2,1) both}
+.car.hop{animation:hop .5s ease-out}
+@keyframes drive{from{transform:translateX(-130%)}to{transform:none}}
+@keyframes hop{30%{transform:translateY(-16px) rotate(-2deg)}60%{transform:translateY(0)}80%{transform:translateY(-5px)}}
+.wh{transform-box:fill-box;transform-origin:center;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.road{stroke-dasharray:26 22;animation:road .6s linear infinite}
+@keyframes road{to{stroke-dashoffset:-48}}
+.puff{fill:#fff;opacity:0;animation:puff 1.6s ease-out infinite 2s}.puff:nth-child(2){animation-delay:2.5s}.puff:nth-child(3){animation-delay:3s}
+@keyframes puff{0%{opacity:.5;transform:translate(0,0) scale(.4)}100%{opacity:0;transform:translate(-50px,-16px) scale(1.6)}}
+.beam{fill:#fff6c2;opacity:.35;animation:beam 3s ease-in-out infinite 2.2s}
+@keyframes beam{50%{opacity:.12}}
+.wr{padding:48px clamp(24px,5vw,64px);display:flex;flex-direction:column;justify-content:center}
+.wr h2{font-size:34px}.tabs{display:flex;gap:22px;margin:16px 0;border-bottom:1px solid var(--line)}
+.tabs button{background:none;border:0;padding:8px 0;color:var(--mute);border-bottom:3px solid transparent;font-weight:600;transition:color .2s,border-color .2s}
+.tabs button[aria-selected=true]{color:var(--ink);border-color:var(--yel)}
+form.stack{display:grid;gap:12px}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--mute);font-weight:500}
+input,select,textarea{font:inherit;padding:10px;border:1px solid var(--line);border-radius:2px;background:#fff;color:var(--ink);width:100%;min-width:0;transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue2)}
+.err{color:var(--bad);font-size:14px;min-height:20px;margin:0}
+.demo{margin-top:22px;font-size:13px;color:var(--mute)}
+.demo button{background:var(--blue2);border:1px solid var(--line);border-radius:2px;padding:5px 10px;margin:6px 6px 0 0;color:var(--blue);font-weight:600;transition:transform .15s}
+.demo button:hover{transform:translateY(-2px)}
+.cred{margin-top:26px;font-size:12.5px;color:var(--mute)}
+/* app */
+.bar{background:var(--blue);color:#fff;display:flex;align-items:center;gap:20px;padding:0 clamp(14px,3vw,36px);flex-wrap:wrap}
+.bar .brand{font:700 21px var(--fd);padding:12px 0;letter-spacing:.02em}
+.bar nav{display:flex;gap:2px;flex:1;overflow-x:auto}
+.bar nav button{background:none;border:0;color:#b9c8e0;padding:16px 12px 13px;border-bottom:3px solid transparent;font-weight:500;white-space:nowrap;transition:color .2s,border-color .25s}
+.bar nav button:hover{color:#fff}.bar nav button[aria-selected=true]{color:#fff;border-color:var(--yel)}
+.who{font-size:14px;color:#c9d6ea;display:flex;gap:10px;align-items:center}
+.who button{background:none;border:1px solid #6f87ad;color:#fff;border-radius:2px;padding:4px 10px}
+.bell{position:relative;border:0!important;font-size:19px;padding:2px 6px!important}
+.bell b{position:absolute;top:-4px;right:-2px;background:var(--yel);color:#16202b;font:700 11px/1 var(--fb);border-radius:9px;padding:2px 5px}
+.bell.ring{animation:ring 2.4s ease-in-out infinite;transform-origin:50% 10%}
+@keyframes ring{0%,60%,100%{transform:rotate(0)}5%,15%,25%{transform:rotate(14deg)}10%,20%,30%{transform:rotate(-14deg)}}
+main{max-width:1160px;margin:0 auto;padding:28px clamp(14px,3vw,36px) 60px}
+.ph{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+.ph h2{font-size:38px;font-weight:700;line-height:1}.ph p{margin:6px 0 0;color:var(--mute)}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.btn{background:var(--blue);color:#fff;border:2px solid var(--blue);border-radius:2px;padding:9px 16px;font-weight:600;transition:background .15s,transform .15s,box-shadow .2s}
+.btn:hover{background:#142e54;transform:translateY(-2px);box-shadow:0 4px 0 var(--yel)}.btn:active{transform:translateY(1px);box-shadow:none}
+.btn.alt{background:transparent;color:var(--blue)}.btn.alt:hover{background:var(--blue2)}
+.btn.del{background:transparent;color:var(--bad);border-color:var(--bad)}.btn.del:hover{background:#fbeceb}
+.btn.ok{background:var(--ok);border-color:var(--ok)}.btn.ok:hover{background:#165c3a}
+.btn.sm{padding:4px 11px;font-size:14px}
+.strip{display:flex;flex-wrap:wrap;background:var(--paper);border:1px solid var(--line);border-top:4px solid var(--blue);margin-bottom:26px}
+.strip div{flex:1;min-width:150px;padding:16px 20px;border-left:1px solid var(--line)}.strip div:first-child{border-left:0}
+.strip b{display:block;font:700 38px/1.05 var(--fd)}.strip span{color:var(--mute);font-size:14px}
+h3.sec{font-size:24px;margin:26px 0 12px;display:flex;align-items:center;gap:10px}
+h3.sec:after{content:"";flex:1;height:1px;background:var(--line)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.tk{display:grid;grid-template-columns:104px 1fr auto;background:var(--paper);border:1px solid var(--line);margin-bottom:14px;transition:transform .25s,box-shadow .25s}
+.tk:hover{transform:translateY(-3px);box-shadow:0 8px 0 -2px var(--blue2),0 10px 22px rgba(22,32,43,.12)}
+.stub{background:var(--blue);color:#fff;display:grid;place-content:center;text-align:center;padding:12px;border-right:3px dashed var(--floor)}
+.stub small{font-size:11px;color:#b9c8e0}.stub b{font:700 22px var(--fd)}
+.tb{padding:14px 18px}.tb h3{font-size:23px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.tb p{margin:4px 0}.mt{color:var(--mute);font-size:14px}
+.st{padding:14px 18px;display:flex;align-items:flex-start}
+.stamp{border:3px double currentColor;padding:2px 12px;font:700 20px var(--fd);text-transform:uppercase;transform:rotate(-6deg);animation:thud .45s cubic-bezier(.3,1.6,.5,1) both;display:inline-block}
+@keyframes thud{from{opacity:0;transform:rotate(-14deg) scale(2)}to{opacity:.92;transform:rotate(-6deg)}}
+.s0{color:var(--blue)}.s1{color:#8a6a00}.s2{color:var(--pur)}.s3{color:var(--warn)}.s4{color:var(--ok)}.s5{color:var(--mute)}.sx{color:var(--bad)}
+.steps{display:flex;gap:4px;list-style:none;padding:0;margin:10px 0 12px}
+.steps li{flex:1;border-top:5px solid var(--line);font-size:11.5px;color:var(--mute);padding-top:3px;transition:border-color .4s calc(var(--i)*130ms),color .4s calc(var(--i)*130ms)}
+.steps li.on{border-color:var(--blue);color:var(--ink);font-weight:600}
+.hl{height:6px;background:var(--line);width:140px;display:inline-block;vertical-align:middle;margin:0 6px}
+.hl i{display:block;height:100%;width:0;background:var(--ok);transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.est{background:#fbf5ff;border:1px dashed var(--pur);padding:8px 12px;margin:8px 0;font-size:14px}
+.plate{display:inline-flex;border:2px solid #111;background:#fff;color:#111;font:700 19px/1 var(--fd);letter-spacing:.08em;border-radius:4px;overflow:hidden;transition:transform .2s}
+.plate:hover{transform:rotate(-2deg) scale(1.05)}
+.plate em{background:#1d4fa3;color:#fff;font:600 8px/1.1 var(--fb);padding:3px 4px;display:grid;place-content:center;font-style:normal;letter-spacing:0}
+.plate span{padding:4px 9px}.plate.sm{font-size:15px}
+.scroll{overflow-x:auto;background:var(--paper);border:1px solid var(--line)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th,td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font:600 14px var(--fd);background:var(--blue2);color:var(--blue);letter-spacing:.03em}tr:last-child td{border-bottom:0}
+tbody tr{transition:background .2s}tbody tr:hover{background:#f1f5fa}
+td input{width:100px;padding:5px 8px}.num{text-align:right}
+.tag{font-weight:600;font-size:13px}.tag.ok{color:var(--ok)}.tag.warn{color:var(--warn)}.tag.bad{color:var(--bad)}
+.gauge{height:8px;background:var(--line);width:150px;display:inline-block;vertical-align:middle}
+.gauge i{display:block;height:100%;width:0;background:var(--ok);transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.gauge i.warn{background:var(--warn)}.gauge i.bad{background:var(--bad)}
+.bars{display:flex;align-items:flex-end;gap:14px;height:170px;background:var(--paper);border:1px solid var(--line);padding:14px 16px 8px}
+.bars div{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;font-size:12px;color:var(--mute);gap:3px}
+.bars i{width:100%;max-width:44px;background:var(--blue);height:0;transition:height 1s cubic-bezier(.2,.8,.2,1)}
+.empty{padding:22px;color:var(--mute);text-align:center;background:var(--paper);border:1px dashed var(--line)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.chips button{background:var(--paper);border:1px solid var(--line);padding:5px 12px;border-radius:2px;transition:background .2s}.chips button[aria-pressed=true]{background:var(--blue);color:#fff;border-color:var(--blue)}
+.chips input{max-width:260px;margin-left:auto}
+.club{display:flex;gap:18px;align-items:center;flex-wrap:wrap;background:linear-gradient(100deg,var(--blue),#2c5a9a);color:#fff;padding:16px 20px;margin-bottom:8px;position:relative;overflow:hidden}
+.club:after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.22) 50%,transparent 70%);transform:translateX(-100%);animation:shine 4s ease-in-out infinite}
+@keyframes shine{to{transform:translateX(100%)}}
+.club h3{font-size:26px}.club p{margin:0;color:#c9d6ea}.club .btn{background:var(--yel);border-color:var(--yel);color:#16202b}
+.sch td{vertical-align:top;min-width:120px;white-space:normal;height:54px}.sch td.today{background:#fffbe6}
+.sch .j{display:block;margin:2px 0}
+.er{overflow-x:auto;background:var(--paper);border:1px solid var(--line);margin-bottom:14px}
+dialog{border:0;border-radius:2px;padding:0;background:var(--paper);color:var(--ink);width:min(640px,94vw);max-height:92vh;border-top:8px solid var(--yel);box-shadow:0 24px 70px rgba(0,0,0,.35)}
+dialog::backdrop{background:rgba(22,32,43,.55);animation:fade .25s}dialog[open]{animation:pop .3s cubic-bezier(.2,.9,.3,1.15)}
+@keyframes pop{from{opacity:0;transform:translateY(22px) scale(.97)}to{opacity:1;transform:none}}@keyframes fade{from{opacity:0}}
+dialog form{padding:22px}dialog h3{font-size:28px;margin-bottom:12px}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.fa{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+textarea.code{font:12.5px/1.4 Consolas,monospace;height:300px;white-space:pre}
+.inv h4{font-size:26px}.inv table{margin:12px 0}.inv .tot td{font-weight:700;font-size:16px}
+.nl p{margin:0;padding:9px 0;border-bottom:1px solid var(--line)}.nl p.new{border-left:4px solid var(--yel);padding-left:10px;font-weight:600}.nl small{display:block;color:var(--mute);font-weight:400}
+#toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,120px);background:var(--ink);color:#fff;padding:10px 20px;border-radius:2px;transition:transform .35s cubic-bezier(.2,.9,.3,1.2);z-index:300;border-left:6px solid var(--yel)}
+#toast.show{transform:translate(-50%,0)}
+.cf{position:fixed;top:-20px;width:9px;height:14px;z-index:400;pointer-events:none;animation:fall 2.3s cubic-bezier(.3,.6,.5,1) forwards}
+@keyframes fall{to{transform:translate(var(--dx),108vh) rotate(var(--r))}}
+::view-transition-old(root){animation:.25s ease-in both fade-out}::view-transition-new(root){animation:.4s cubic-bezier(.2,.8,.2,1) both rise}
+@keyframes fade-out{to{opacity:0}}@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+@media (max-width:820px){.welcome{grid-template-columns:1fr}.wl{min-height:440px}.two{grid-template-columns:1fr}
+.tk{grid-template-columns:1fr}.stub{border-right:0;border-bottom:3px dashed var(--floor);grid-auto-flow:column;gap:10px;padding:8px}.st{padding-top:0}}
+@media print{body *{visibility:hidden}#invp,#invp *,#rp,#rp *{visibility:visible}#invp,#rp{position:absolute;left:0;top:0;width:100%;padding:20px}}
+@media (prefers-reduced-motion:reduce){*,::view-transition-old(root),::view-transition-new(root){animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="welcome" id="welcome">
+ <div class="wl">
+  <div class="haz" style="position:absolute;left:0;right:0;top:0"></div>
+  <h1><span style="--i:0">Book</span> <span style="--i:1">it.</span> <span style="--i:2">Fix</span> <span style="--i:3">it.</span> <span style="--i:4">Keep</span> <span style="--i:5">the</span> <span style="--i:6">record.</span></h1>
+  <p>A service desk for workshops, mechanics and vehicle owners. Slot booking, digital inspection, estimate approval, spare parts, invoices and reminders, all tied to one vehicle history.</p>
+  <svg class="scene" id="scene" viewBox="0 0 380 150" aria-label="Animated car. Tap it for a honk.">
+   <line class="road" x1="0" y1="132" x2="380" y2="132" stroke="#f4c20d" stroke-width="4"/>
+   <g class="car" id="car">
+    <polygon class="beam" points="346,84 380,70 380,100"/>
+    <g><circle class="puff" cx="20" cy="104" r="8"/><circle class="puff" cx="20" cy="104" r="8"/><circle class="puff" cx="20" cy="104" r="8"/></g>
+    <path d="M22 108V92q2-14 20-18l48-8q20-34 62-36h56q34 2 52 32l40 8q18 4 18 22v16z" fill="#f4c20d"/>
+    <path d="M104 64q16-24 48-26h50q24 4 40 28z" fill="#cfe0f5"/><path d="M178 38v28" stroke="#f4c20d" stroke-width="5"/>
+    <rect x="334" y="86" width="14" height="8" fill="#fff"/>
+    <g class="wh"><circle cx="100" cy="112" r="22" fill="#16202b"/><circle cx="100" cy="112" r="10" fill="#8895a5"/><path d="M100 94v36M82 112h36" stroke="#8895a5" stroke-width="3"/></g>
+    <g class="wh"><circle cx="276" cy="112" r="22" fill="#16202b"/><circle cx="276" cy="112" r="10" fill="#8895a5"/><path d="M276 94v36M258 112h36" stroke="#8895a5" stroke-width="3"/></g>
+   </g>
+  </svg>
+ </div>
+ <div class="wr">
+  <h2>Welcome to the service desk</h2>
+  <div class="tabs"><button data-wt="lf" aria-selected="true">Sign in</button><button data-wt="rf" aria-selected="false">New customer</button></div>
+  <form class="stack" id="lf"><label>Username<input name="u" autocomplete="username" required></label><label>Password<input name="p" type="password" autocomplete="current-password" required></label><p class="err" id="lerr"></p><button class="btn">Sign in</button></form>
+  <form class="stack hidden" id="rf"><label>Full name<input name="name" required></label><label>Phone<input name="phone" type="tel"></label><label>Username<input name="u" required></label><label>Password<input name="p" type="password" minlength="4" required></label><p class="err" id="rerr"></p><button class="btn">Create account</button></form>
+  <div class="demo">Demo accounts, tap to fill:<br><button data-fill="admin|admin123">Admin</button><button data-fill="rahul|cust123">Customer (has an estimate to approve)</button><button data-fill="ravi|mech123">Mechanic</button></div>
+  <p class="cred">Project by Vatsal Kumar and Surya A · USN 1MS23IS142, 1MS23IS131</p>
+ </div>
+</div>
+
+<div id="app" class="hidden">
+ <div class="haz"></div>
+ <header class="bar"><div class="brand">Vehicle Service Desk</div><nav id="nav"></nav><div class="who"><button class="bell" id="bell" aria-label="Notifications">🔔</button><span id="who"></span><button id="out">Sign out</button></div></header>
+ <main id="main"></main>
+</div>
+<dialog id="dlg"><form id="mf"><h3 id="mt"></h3><div id="mb"></div><div class="fa"><button type="button" class="btn alt" id="mx">Close</button><button class="btn" id="mok">Save</button></div></form></dialog>
+<div id="toast" role="status"></div>
+
+<script>
+(function(){
+"use strict";
+var KEY="vsmms.v4",D,me=null,view="dash",cb=null,tsel="users",fil="all",qs="",rf,rt;
+var ST=["Booked","Inspection","Approval","Repairing","Ready","Delivered"];
+var SLOTS=["09:00","10:30","12:00","14:00","15:30","17:00"],CAP=2,MUL={Bike:.5,Car:1,SUV:1.3,Truck:1.8},PLAN={Silver:[999,.1],Gold:[1999,.2]},PICK=250;
+var CHK=["Engine oil level","Brake pads","Tyre tread","Battery health","Lights and indicators","Coolant level","Suspension","Wipers","Air filter","Belts and hoses"];
+var SCH={users:"id INT PRIMARY KEY, name VARCHAR(80), username VARCHAR(30) UNIQUE, password VARCHAR(60), role VARCHAR(10), phone VARCHAR(15), plan VARCHAR(10), planExp DATE",
+vehicles:"id INT PRIMARY KEY, uid INT, reg VARCHAR(12) UNIQUE, type VARCHAR(10), model VARCHAR(60), year INT, fuel VARCHAR(10), odo INT, ins DATE, puc DATE",
+catalog:"id INT PRIMARY KEY, name VARCHAR(60), price INT, km INT, mo INT",
+parts:"id INT PRIMARY KEY, name VARCHAR(60), price INT, stock INT, reorder INT",
+jobs:"id INT PRIMARY KEY, vid INT, uid INT, svc INT, mech INT, date DATE, slot VARCHAR(5), pickup TINYINT, issue TEXT, status VARCHAR(12), odoIn INT, labour INT, extra TEXT, appr VARCHAR(10), insp TEXT, parts TEXT, notes TEXT, warr DATE",
+invoices:"id INT PRIMARY KEY, jid INT, labour INT, extra INT, parts INT, disc INT, gst INT, total INT, paid TINYINT, mode VARCHAR(10), date DATE",
+feedback:"id INT PRIMARY KEY, jid INT, rating INT, text TEXT",
+notifs:"id INT PRIMARY KEY, uid INT, text VARCHAR(160), ts VARCHAR(16), seen TINYINT",
+logs:"id INT PRIMARY KEY, ts VARCHAR(16), actor VARCHAR(30), action VARCHAR(120)"};
+var FK=["vehicles(uid)>users","jobs(vid)>vehicles","jobs(uid)>users","jobs(svc)>catalog","jobs(mech)>users","invoices(jid)>jobs","feedback(jid)>jobs","notifs(uid)>users"];
+var NAV={admin:[["dash","Overview"],["jobs","Job cards"],["sched","Schedule"],["veh","Vehicles"],["parts","Spare parts"],["bill","Invoices"],["rem","Reminders"],["rep","Reports"],["users","People"],["db","Database"]],
+customer:[["dash","Overview"],["jobs","My bookings"],["sched","Schedule"],["veh","My vehicles"],["bill","Invoices"],["rem","Reminders"]],
+mechanic:[["dash","Overview"],["jobs","My jobs"],["sched","Schedule"],["parts","Spare parts"]]};
+
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function inr(n){return "₹"+Math.round(n).toLocaleString("en-IN")}
+function iso(d){return d.toISOString().slice(0,10)}
+function addD(d,n){var x=new Date(d);x.setDate(x.getDate()+n);return x}
+function addM(d,m){var x=new Date(d);x.setMonth(x.getMonth()+m);return x}
+function pad(n,l){return String(n).padStart(l,"0")}
+function sum(a,f){return a.reduce(function(s,x){return s+f(x)},0)}
+function toast(t){var e=$("toast");e.textContent=t;e.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove("show")},2600)}
+function confetti(){for(var i=0;i<40;i++){var d=document.createElement("i");d.className="cf";d.style.cssText="left:"+(25+Math.random()*50)+"vw;background:"+["#f4c20d","#1c3d6e","#1f7a4d","#b3261e"][i%4]+";--dx:"+(Math.random()*50-25)+"vw;--r:"+Math.round(Math.random()*720)+"deg;animation-delay:"+(Math.random()*.4)+"s";document.body.appendChild(d);setTimeout(function(x){x.remove()},3000,d)}}
+
+/* ---------- data layer ---------- */
+function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
+function get(t,id){return D.t[t].find(function(r){return r.id===id})}
+function ins(t,o){o.id=++D.q[t];D.t[t].push(o);save();return o}
+function upd(t,id,p){Object.assign(get(t,id),p);save()}
+function del(t,id){D.t[t]=D.t[t].filter(function(r){return r.id!==id});save()}
+function stamp(){return new Date().toISOString().slice(0,16).replace("T"," ")}
+function log(a){ins("logs",{ts:stamp(),actor:me?me.username:"system",action:a})}
+function note(uid,text){if(uid)ins("notifs",{uid:uid,text:text,ts:stamp(),seen:false})}
+function noteAdmin(text){D.t.users.forEach(function(u){if(u.role==="admin")note(u.id,text)})}
+function lab(c,v){return Math.round(c.price*(MUL[v.type]||1))}
+function exTot(j){return(j.appr==="Approved"?sum(j.extra||[],function(x){return x.c}):0)+(j.pickup?PICK:0)}
+function disc(j){var u=get("users",j.uid);return u&&u.plan&&u.planExp>=iso(new Date())?Math.round(j.labour*PLAN[u.plan][1]):0}
+function mkInv(j,paid){var p=sum(j.parts,function(x){return x.qty*x.price}),e=exTot(j),d=disc(j),tx=j.labour+e+p-d,g=Math.round(tx*.18);
+  return ins("invoices",{jid:j.id,labour:j.labour,extra:e,parts:p,disc:d,gst:g,total:tx+g,paid:!!paid,mode:paid?"UPI":"",date:j.date})}
+function mkInsp(lv){var items=CHK.map(function(n,i){return[n,lv[i]||"OK"]}),sc=Math.round(sum(items,function(x){return x[1]==="OK"?1:x[1]==="Attention"?.5:0})/items.length*100);return{items:items,score:sc}}
+function seed(){
+  D={t:{},q:{}};Object.keys(SCH).forEach(function(k){D.t[k]=[];D.q[k]=0});
+  [["Service Manager","admin","admin123","admin","","",""],["Rahul Sharma","rahul","cust123","customer","9845012345","",""],["Ravi Kumar","ravi","mech123","mechanic","9900112233","",""],["Meena Iyer","meena","cust123","customer","9741098765","Gold",iso(addM(new Date(),10))],["Suresh Gowda","suresh","mech123","mechanic","9886044556","",""]].forEach(function(u){ins("users",{name:u[0],username:u[1],password:u[2],role:u[3],phone:u[4],plan:u[5],planExp:u[6]})});
+  [["Oil change",600,5000,6],["General service",1500,10000,12],["Brake service",900,20000,12],["Wheel alignment",700,10000,0],["AC service",1200,0,12],["Battery check",300,0,6],["Tyre rotation",400,8000,0],["Engine repair",3000,0,0]].forEach(function(c){ins("catalog",{name:c[0],price:c[1],km:c[2],mo:c[3]})});
+  [["Engine oil (1 L)",520,40,10],["Oil filter",280,25,8],["Brake pads (set)",1800,4,5],["Air filter",450,14,6],["Wiper blades",350,12,5],["Battery 55Ah",5400,3,3],["Coolant (1 L)",300,18,6],["Spark plug",240,30,8]].forEach(function(p){ins("parts",{name:p[0],price:p[1],stock:p[2],reorder:p[3]})});
+  var now=new Date();
+  [[2,"KA01MX2023","Car","Honda City",2021,"Petrol",24800,150,70],[2,"KA05NB4471","Car","Maruti Swift",2019,"Diesel",61200,-20,20],[4,"KA03HK9012","SUV","Hyundai Creta",2020,"Petrol",33400,240,300],[2,"KA53ER5588","Bike","Royal Enfield Classic 350",2022,"Petrol",12400,90,-5]].forEach(function(v){ins("vehicles",{uid:v[0],reg:v[1],type:v[2],model:v[3],year:v[4],fuel:v[5],odo:v[6],ins:iso(addD(now,v[7])),puc:iso(addD(now,v[8]))})});
+  function J(v,s,ago,st,mech,parts,odo,issue,x){x=x||{};var veh=get("vehicles",v),c=get("catalog",s),
+    pp=parts.map(function(q){var p=get("parts",q[0]);return{pid:p.id,name:p.name,qty:q[1],price:p.price}});
+    var j=ins("jobs",{vid:v,uid:veh.uid,svc:s,mech:mech,date:iso(addD(now,-ago)),slot:x.slot||"10:30",pickup:x.pickup?1:0,issue:issue,status:st,odoIn:odo,labour:lab(c,veh),extra:x.extra||[],appr:x.appr||"",insp:x.insp||null,parts:pp,notes:x.notes||"",warr:st==="Delivered"?iso(addD(now,-ago+90)):""});
+    if(st==="Delivered"||st==="Ready")mkInv(j,st==="Delivered");return j}
+  var ok=mkInsp([]),mid=mkInsp(["OK","Attention","OK","Urgent","OK","OK","Attention"]);
+  J(1,1,150,"Delivered",3,[[1,4],[2,1]],20500,"Routine oil change",{insp:ok,slot:"09:00"});
+  J(1,3,90,"Delivered",3,[[3,1]],22000,"Squeaking brakes",{insp:mid,extra:[{n:"Brake fluid flush",c:600}],appr:"Approved",slot:"12:00"});
+  J(2,1,120,"Delivered",5,[[1,3],[2,1]],55000,"",{insp:ok,slot:"14:00"});
+  J(3,1,210,"Delivered",3,[[1,3],[2,1]],26000,"",{insp:ok});
+  J(4,2,100,"Delivered",3,[[1,2],[2,1],[8,1]],9800,"First free service",{insp:ok,pickup:1});
+  J(1,4,40,"Delivered",5,[],24000,"Steering pulls left",{insp:ok,slot:"15:30"});
+  J(3,2,0,"Repairing",3,[],33400,"Full service before road trip",{insp:mid,slot:"09:00"});
+  J(2,3,-2,"Booked",0,[],61200,"Pedal feels soft",{slot:"12:00",pickup:1});
+  J(1,5,1,"Ready",5,[[7,1]],24800,"AC not cooling",{insp:ok,notes:"Gas topped up, cooling restored.",slot:"10:30"});
+  J(4,7,0,"Approval",5,[],12400,"Rear wheel wobble",{insp:mid,extra:[{n:"Replace chain sprocket",c:2200}],slot:"14:00"});
+  ins("feedback",{jid:1,rating:5,text:"Quick and neat work."});ins("feedback",{jid:2,rating:5,text:""});ins("feedback",{jid:3,rating:4,text:"Good, slightly late."});ins("feedback",{jid:5,rating:4,text:""});
+  note(2,"Estimate ready for your Royal Enfield: approve the extra work to continue.");note(2,"Your Honda City AC service is ready for pickup.");
+  noteAdmin("Booking JC-0008 for KA05NB4471 needs a mechanic.");
+  me=null;log("Demo data created");save();
+}
+function load(){try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){D=null}if(!D||!D.t)seed()}
+
+/* ---------- scope ---------- */
+function sj(){return D.t.jobs.filter(function(j){return me.role==="admin"||(me.role==="customer"&&j.uid===me.id)||(me.role==="mechanic"&&j.mech===me.id)})}
+function sv(){return D.t.vehicles.filter(function(v){return me.role==="admin"||v.uid===me.id})}
+function si(){var ids=sj().map(function(j){return j.id});return D.t.invoices.filter(function(i){return ids.indexOf(i.jid)>-1})}
+function days(d){return d?Math.round((new Date(d)-new Date())/864e5):null}
+function exp(d){var n=days(d);return n==null?'<span class="tag">-</span>':n<0?'<span class="tag bad">Expired '+(-n)+"d ago</span>":n<=30?'<span class="tag warn">'+n+" days left</span>":'<span class="tag ok">Valid</span>'}
+function docAlerts(vs){var o=[];vs.forEach(function(v){[["Insurance",v.ins],["Pollution (PUC)",v.puc]].forEach(function(x){var n=days(x[1]);if(n!=null&&n<=30)o.push({v:v,n:x[0],d:x[1],days:n})})});return o.sort(function(a,b){return a.days-b.days})}
+function remRows(vs){var out=[],rk={bad:0,warn:1,ok:2};
+  vs.forEach(function(v){D.t.catalog.forEach(function(c){if(!c.km&&!c.mo)return;var last=null;
+    D.t.jobs.forEach(function(j){if(j.vid===v.id&&j.svc===c.id&&j.status==="Delivered"&&(!last||j.date>last.date))last=j});if(!last)return;
+    var info=[],p=0,st="ok";
+    if(c.km){var used=v.odo-last.odoIn,left=c.km-used;p=Math.max(p,used/c.km);info.push(left>=0?left.toLocaleString("en-IN")+" km left":(-left).toLocaleString("en-IN")+" km over");if(left<0)st="bad";else if(left<=500)st="warn"}
+    if(c.mo){var dl=Math.round((addM(last.date,c.mo)-new Date())/864e5);p=Math.max(p,1-dl/(c.mo*30.4));info.push(dl>=0?dl+" days left":(-dl)+" days overdue");if(dl<0)st="bad";else if(dl<=30&&st!=="bad")st="warn"}
+    out.push({v:v,c:c,st:st,p:Math.min(1,Math.max(0,p)),info:info.join(", ")})})});
+  return out.sort(function(a,b){return rk[a.st]-rk[b.st]})}
+
+/* ---------- ui helpers ---------- */
+function head(t,s,a){return '<div class="ph"><div><h2>'+t+'</h2><p>'+s+'</p></div><div class="acts">'+(a||"")+'</div></div>'}
+function btn(a,l,id,c){return '<button class="btn '+(c||"")+'" data-a="'+a+'" data-id="'+(id||0)+'">'+l+'</button>'}
+function tbl(h,rows,e){return rows.length?'<div class="scroll"><table><thead><tr>'+h.map(function(x){return "<th>"+x+"</th>"}).join("")+"</tr></thead><tbody>"+rows.join("")+"</tbody></table></div>":'<div class="empty">'+e+"</div>"}
+function plate(r){return '<span class="plate sm"><em>IND</em><span>'+esc(r)+'</span></span>'}
+function tag(s){return '<span class="tag '+s+'">'+{bad:"Overdue",warn:"Due soon",ok:"On track"}[s]+'</span>'}
+function strip(t){return '<div class="strip">'+t.map(function(a){return "<div><b data-n=\""+a[0]+'" data-p="'+(a[2]||"")+'">0</b><span>'+a[1]+"</span></div>"}).join("")+"</div>"}
+function fld(l,n,o){o=o||{};var t=o.t||"text",h,rq=o.req===false?"":" required";
+  if(o.sel)h='<select name="'+n+'"'+rq+'>'+o.sel.map(function(x){return '<option value="'+x[0]+'"'+(String(x[0])===String(o.v)?" selected":"")+'>'+esc(x[1])+'</option>'}).join("")+'</select>';
+  else if(t==="area")h='<textarea name="'+n+'" rows="3">'+esc(o.v||"")+'</textarea>';
+  else h='<input name="'+n+'" type="'+t+'" value="'+esc(o.v==null?"":o.v)+'"'+(o.ph?' placeholder="'+o.ph+'"':"")+(o.min!=null?' min="'+o.min+'"':"")+rq+'>';
+  return '<label>'+l+h+'</label>'}
+function modal(t,body,ok,fn){$("mt").textContent=t;$("mb").innerHTML=body;$("mok").textContent=ok||"Save";$("mok").classList.toggle("hidden",!fn);cb=fn;$("dlg").showModal()}
+function ask(msg,fn){modal("Please confirm","<p>"+msg+"</p>","Yes, continue",function(){fn()})}
+
+/* ---------- views ---------- */
+function ticket(j){
+  var v=get("vehicles",j.vid),c=get("catalog",j.svc),u=get("users",j.uid),m=j.mech?get("users",j.mech):null,k=ST.indexOf(j.status),r=me.role,s=j.status,a="";
+  var inv=D.t.invoices.find(function(i){return i.jid===j.id}),fb=D.t.feedback.find(function(f){return f.jid===j.id}),ex=j.extra||[],eT=sum(ex,function(x){return x.c});
+  var pt=j.parts.map(function(p){return p.qty+" × "+esc(p.name)}).join(", ");
+  if(r==="admin"){if(k>=0&&k<4)a+=btn("assign","Assign mechanic",j.id,"alt sm");if(s==="Booked")a+=btn("checkin","Check in vehicle",j.id,"sm")+btn("cancel","Cancel",j.id,"del sm");if(s==="Ready")a+=btn("deliver","Collect payment and deliver",j.id,"ok sm")}
+  if(r==="mechanic"){if(s==="Booked")a+=btn("checkin","Check in vehicle",j.id,"sm");if(s==="Inspection")a+=btn("inspect","Complete inspection",j.id,"sm");if(s==="Repairing")a+=btn("usepart","Add part used",j.id,"alt sm")+btn("ready","Mark ready",j.id,"sm")}
+  if(r==="customer"){if(s==="Booked")a+=btn("cancel","Cancel booking",j.id,"del sm");if(s==="Approval")a+=btn("approve","Approve "+inr(eT),j.id,"ok sm")+btn("decline","Decline",j.id,"del sm");if(s==="Delivered"&&!fb)a+=btn("rate","Rate this service",j.id,"alt sm")}
+  if(inv&&r!=="mechanic")a+=btn("inv","View invoice",inv.id,"alt sm");
+  var bad=j.insp?j.insp.items.filter(function(x){return x[1]!=="OK"}).map(function(x){return esc(x[0])+" ("+x[1].toLowerCase()+")"}).join(", "):"";
+  return '<article class="tk"><div class="stub"><small>Job card</small><b>JC-'+pad(j.id,4)+'</b></div><div class="tb"><h3>'+esc(c.name)+" "+plate(v.reg)+'</h3><p class="mt">'+esc(v.model)+(r!=="customer"?" · "+esc(u.name):"")+" · "+j.date+" at "+j.slot+(j.pickup?" · pickup and drop":"")+(m?" · mechanic "+esc(m.name):(r!=="customer"&&k>-1&&k<5?' · <b class="bad">no mechanic assigned</b>':""))+"</p>"+
+  (j.issue?"<p>“"+esc(j.issue)+"”</p>":"")+
+  (j.insp?'<p class="mt">Inspection health <span class="hl"><i data-w="'+j.insp.score+'"></i></span><b>'+j.insp.score+"%</b>"+(bad?" · "+bad:"")+"</p>":"")+
+  (ex.length?'<div class="est"><b>Extra work estimate:</b> '+ex.map(function(x){return esc(x.n)+" "+inr(x.c)}).join(", ")+" · "+(j.appr?"<b>"+j.appr+"</b>":"<b>awaiting customer approval</b>")+"</div>":"")+
+  (pt?'<p class="mt">Parts: '+pt+"</p>":"")+(j.notes?'<p class="mt">Workshop note: '+esc(j.notes)+"</p>":"")+(j.warr?'<p class="mt">Warranty on this work until '+j.warr+"</p>":"")+
+  (fb?'<p class="mt">Rated '+"★".repeat(fb.rating)+"☆".repeat(5-fb.rating)+(fb.text?" – "+esc(fb.text):"")+"</p>":"")+
+  (k>-1?'<ol class="steps">'+ST.map(function(x,i){return '<li style="--i:'+i+'"'+(i<=k?" data-on":"")+">"+x+"</li>"}).join("")+"</ol>":"")+
+  '<div class="acts">'+a+'</div></div><div class="st"><span class="stamp s'+(k<0?"x":k)+'">'+s+"</span></div></article>"}
+
+function vDash(){
+  var J=sj(),open=J.filter(function(j){return ST.indexOf(j.status)>-1&&j.status!=="Delivered"}),R=remRows(sv()).filter(function(r){return r.st!=="ok"}),dA=docAlerts(sv()),t,x="",r=me.role;
+  if(r==="admin"){var paid=D.t.invoices.filter(function(i){return i.paid}),low=D.t.parts.filter(function(p){return p.stock<=p.reorder}),mo=[],n=new Date();
+    for(var i=5;i>=0;i--){var d=new Date(n.getFullYear(),n.getMonth()-i,1);mo.push({k:d.getFullYear()+"-"+d.getMonth(),l:d.toLocaleString("en",{month:"short"}),v:0})}
+    paid.forEach(function(p){var d=new Date(p.date),k=d.getFullYear()+"-"+d.getMonth();mo.forEach(function(m){if(m.k===k)m.v+=p.total})});
+    var mx=Math.max.apply(null,mo.map(function(m){return m.v}))||1;
+    t=[[open.length,"Open job cards"],[J.filter(function(j){return j.status==="Ready"}).length,"Ready for pickup"],[sum(paid,function(i){return i.total}),"Revenue collected","₹"],[low.length,"Parts to reorder"],[dA.length,"Documents expiring"]];
+    x='<div class="two"><div><h3 class="sec">Revenue, last 6 months</h3><div class="bars">'+mo.map(function(m){return "<div>"+(m.v?"<span>"+inr(m.v)+"</span>":"")+'<i data-h="'+Math.round(m.v/mx*100)+'"></i>'+m.l+"</div>"}).join("")+'</div></div><div><h3 class="sec">Parts to reorder</h3>'+tbl(["Part","Stock","Reorder at"],low.map(function(p){return "<tr><td>"+esc(p.name)+'</td><td class="bad"><b>'+p.stock+"</b></td><td>"+p.reorder+"</td></tr>"}),"Stock levels are healthy.")+"</div></div>"}
+  else if(r==="customer"){var act=me.plan&&me.planExp>=iso(new Date());
+    t=[[sv().length,"My vehicles"],[open.length,"Active bookings"],[R.length+dA.length,"Things needing attention"],[sum(si().filter(function(i){return i.paid}),function(i){return i.total}),"Spent so far","₹"]];
+    x='<div class="club"><div style="flex:1"><h3>'+(act?me.plan+" member of Care Club":"Join the Care Club")+"</h3><p>"+(act?"You get "+PLAN[me.plan][1]*100+"% off labour until "+me.planExp+".":"Members get 10% to 20% off labour on every job for a year.")+"</p></div>"+(act?"":btn("join","See plans"))+"</div>"}
+  else t=[[J.filter(function(j){return j.status==="Booked"||j.status==="Inspection"}).length,"Waiting for you"],[J.filter(function(j){return j.status==="Repairing"}).length,"Under repair"],[J.filter(function(j){return j.status==="Delivered"||j.status==="Ready"}).length,"Jobs completed"]];
+  return head("Hello, "+esc(me.name.split(" ")[0]),new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long"}),r!=="mechanic"?btn("book","+ New booking"):"")+strip(t)+x+
+  '<h3 class="sec">Active job cards</h3>'+(open.length?open.slice(0,4).map(ticket).join(""):'<div class="empty">No active job cards.</div>')+
+  (r!=="mechanic"?'<h3 class="sec">Needs attention</h3>'+tbl(["Vehicle","Item","Detail","Status"],R.slice(0,4).map(function(q){return "<tr><td>"+plate(q.v.reg)+"</td><td>"+esc(q.c.name)+"</td><td>"+esc(q.info)+"</td><td>"+tag(q.st)+"</td></tr>"}).concat(dA.map(function(q){return "<tr><td>"+plate(q.v.reg)+"</td><td>"+q.n+" renewal</td><td>"+q.d+"</td><td>"+exp(q.d)+"</td></tr>"})),"Nothing needs attention."):"")}
+
+function jobList(){var q=qs.toLowerCase(),J=sj().slice().sort(function(a,b){return b.id-a.id}).filter(function(j){var v=get("vehicles",j.vid);return(fil==="all"||j.status===fil)&&(!q||(v.reg+" "+v.model+" "+get("users",j.uid).name+" "+get("catalog",j.svc).name+" JC-"+pad(j.id,4)).toLowerCase().indexOf(q)>-1)});
+  return J.length?J.map(ticket).join(""):'<div class="empty">No job cards match.</div>'}
+function vJobs(){return head(me.role==="mechanic"?"My jobs":me.role==="customer"?"My bookings":"Job cards","Each booking is a job card: Booked, Inspection, Approval, Repairing, Ready, Delivered.",me.role!=="mechanic"?btn("book","+ New booking"):"")+
+  '<div class="chips">'+["all"].concat(ST,["Cancelled"]).map(function(s){return '<button data-fil="'+s+'" aria-pressed="'+(fil===s)+'">'+(s==="all"?"All":s)+"</button>"}).join("")+'<input id="qs" placeholder="Search plate, model, customer, job no." value="'+esc(qs)+'"></div><div id="jl">'+jobList()+"</div>"}
+
+function vSched(){var J=sj().filter(function(j){return j.status!=="Cancelled"}),ds=[];for(var i=0;i<7;i++)ds.push(addD(new Date(),i));
+  return head("Schedule","The next 7 days. Each slot holds "+CAP+" vehicles.",me.role!=="mechanic"?btn("book","+ New booking"):"")+'<div class="scroll"><table class="sch"><thead><tr><th>Slot</th>'+ds.map(function(d){return "<th>"+d.toLocaleDateString("en-IN",{weekday:"short",day:"numeric",month:"short"})+"</th>"}).join("")+"</tr></thead><tbody>"+
+  SLOTS.map(function(sl){return "<tr><td><b>"+sl+"</b></td>"+ds.map(function(d,i){var c=J.filter(function(j){return j.date===iso(d)&&j.slot===sl});return '<td class="'+(i?"":"today")+'">'+c.map(function(j){return '<span class="j">'+plate(get("vehicles",j.vid).reg)+' <small class="s'+ST.indexOf(j.status)+'">'+j.status+"</small></span>"}).join("")+"</td>"}).join("")+"</tr>"}).join("")+"</tbody></table></div>"}
+
+function vVeh(){var a=me.role==="admin";
+  return head(a?"Vehicles":"My vehicles",sv().length+" registered",btn("addveh","+ Add vehicle"))+tbl(["Registration","Vehicle","Fuel"].concat(a?["Owner"]:[],["Odometer (km)","Insurance","PUC","Jobs",""]),sv().map(function(v){var o=get("users",v.uid);
+    return "<tr><td>"+plate(v.reg)+"</td><td>"+esc(v.model)+" ("+v.year+", "+v.type+")</td><td>"+v.fuel+"</td>"+(a?"<td>"+esc(o.name)+"</td>":"")+'<td><input type="number" min="0" data-odo="'+v.id+'" value="'+v.odo+'" aria-label="Odometer"></td><td>'+exp(v.ins)+"</td><td>"+exp(v.puc)+"</td><td>"+D.t.jobs.filter(function(j){return j.vid===v.id}).length+"</td><td>"+btn("book","Book",v.id,"sm")+" "+btn("hist","History",v.id,"alt sm")+" "+btn("delveh","Delete",v.id,"del sm")+"</td></tr>"}),"No vehicles yet. Add one to start booking services.")}
+
+function vParts(){var a=me.role==="admin";
+  return head("Spare parts","Stock reduces automatically when a mechanic records a part on a job.",a?btn("addpart","+ Add part"):"")+tbl(["Part","Price","In stock","Reorder at","Status"].concat(a?[""]:[]),D.t.parts.map(function(p){var low=p.stock<=p.reorder;
+    return "<tr><td>"+esc(p.name)+"</td><td>"+inr(p.price)+"</td><td><b>"+p.stock+"</b></td><td>"+p.reorder+"</td><td>"+(low?'<span class="tag bad">Reorder</span>':'<span class="tag ok">OK</span>')+"</td>"+(a?"<td>"+btn("restock","Restock",p.id,"alt sm")+"</td>":"")+"</tr>"}),"")}
+
+function vBill(){var I=si().slice().sort(function(a,b){return b.id-a.id});
+  return head("Invoices","Created when a mechanic marks a job ready. 18% GST is included.","")+tbl(["Invoice","Job card","Vehicle","Date","Total","Status",""],I.map(function(i){var j=get("jobs",i.jid);
+    return "<tr><td>INV-"+pad(i.id,4)+"</td><td>JC-"+pad(j.id,4)+"</td><td>"+plate(get("vehicles",j.vid).reg)+"</td><td>"+i.date+"</td><td><b>"+inr(i.total)+"</b></td><td>"+(i.paid?'<span class="tag ok">Paid</span>':'<span class="tag warn">Payment due</span>')+"</td><td>"+btn("inv","View",i.id,"alt sm")+"</td></tr>"}),"No invoices yet.")}
+
+function vRem(){var R=remRows(sv()),dd=[];sv().forEach(function(v){dd.push(v)});
+  return head("Reminders","Service intervals come from the last delivered job. Documents are flagged 30 days before expiry.","")+'<h3 class="sec" style="margin-top:0">Service intervals</h3>'+tbl(["Vehicle","Service","Progress","Detail","Status",""],R.map(function(r){
+    return "<tr><td>"+plate(r.v.reg)+"</td><td>"+esc(r.c.name)+'</td><td><span class="gauge"><i class="'+(r.st==="ok"?"":r.st)+'" data-w="'+Math.round(r.p*100)+'"></i></span></td><td>'+esc(r.info)+"</td><td>"+tag(r.st)+'</td><td><button class="btn alt sm" data-a="book" data-id="'+r.v.id+'" data-s="'+r.c.id+'">Book now</button></td></tr>'}),"No reminders yet. They appear after a service is delivered.")+
+  '<h3 class="sec">Documents</h3>'+tbl(["Vehicle","Insurance expires","","PUC expires",""],dd.map(function(v){return "<tr><td>"+plate(v.reg)+"</td><td>"+(v.ins||"-")+"</td><td>"+exp(v.ins)+"</td><td>"+(v.puc||"-")+"</td><td>"+exp(v.puc)+"</td></tr>"}),"No vehicles.")}
+
+function vRep(){if(!rf){rf=iso(addD(new Date(),-180));rt=iso(addD(new Date(),30))}
+  var J=D.t.jobs.filter(function(j){return j.date>=rf&&j.date<=rt&&j.status!=="Cancelled"}),ids=J.map(function(j){return j.id}),I=D.t.invoices.filter(function(i){return i.paid&&ids.indexOf(i.jid)>-1}),F=D.t.feedback.filter(function(f){return ids.indexOf(f.jid)>-1}),rev=sum(I,function(i){return i.total});
+  var mech=D.t.users.filter(function(u){return u.role==="mechanic"}).map(function(m){var mj=J.filter(function(j){return j.mech===m.id}),dn=mj.filter(function(j){return j.status==="Delivered"}),fb=F.filter(function(f){return mj.some(function(j){return j.id===f.jid})});
+    return "<tr><td>"+esc(m.name)+"</td><td>"+mj.length+"</td><td>"+dn.length+"</td><td>"+(fb.length?(sum(fb,function(f){return f.rating})/fb.length).toFixed(1)+" ★":"-")+"</td><td>"+inr(sum(I.filter(function(i){return dn.some(function(j){return j.id===i.jid})}),function(i){return i.total}))+"</td></tr>"});
+  var sv2=D.t.catalog.map(function(c){var sj2=J.filter(function(j){return j.svc===c.id});return{c:c,n:sj2.length,r:sum(I.filter(function(i){return sj2.some(function(j){return j.id===i.jid})}),function(i){return i.total})}}).filter(function(x){return x.n}).sort(function(a,b){return b.n-a.n});
+  return head("Reports","Date-wise service report for the workshop.",btn("print","Print report","","alt"))+'<div class="chips"><label style="flex-direction:row;align-items:center;gap:8px">From <input type="date" id="rf" value="'+rf+'" style="width:auto"></label><label style="flex-direction:row;align-items:center;gap:8px">To <input type="date" id="rt" value="'+rt+'" style="width:auto"></label></div>'+
+  '<div id="rp">'+strip([[J.length,"Job cards"],[rev,"Revenue collected","₹"],[I.length?Math.round(rev/I.length):0,"Average invoice","₹"],[F.length?+(sum(F,function(f){return f.rating})/F.length).toFixed(1):0,"Average rating (out of 5)"]])+
+  '<h3 class="sec">Job register</h3>'+tbl(["Job","Date","Vehicle","Service","Mechanic","Status","Billed"],J.slice().sort(function(a,b){return a.date.localeCompare(b.date)}).map(function(j){var i=D.t.invoices.find(function(x){return x.jid===j.id});return "<tr><td>JC-"+pad(j.id,4)+"</td><td>"+j.date+"</td><td>"+esc(get("vehicles",j.vid).reg)+"</td><td>"+esc(get("catalog",j.svc).name)+"</td><td>"+(j.mech?esc(get("users",j.mech).name):"-")+"</td><td>"+j.status+"</td><td>"+(i?inr(i.total):"-")+"</td></tr>"}),"No jobs in this range.")+
+  '<h3 class="sec">Mechanic performance</h3>'+tbl(["Mechanic","Assigned","Delivered","Avg rating","Revenue"],mech,"")+
+  '<h3 class="sec">Services by demand</h3>'+tbl(["Service","Jobs","Revenue"],sv2.map(function(x){return "<tr><td>"+esc(x.c.name)+"</td><td>"+x.n+"</td><td>"+inr(x.r)+"</td></tr>"}),"No data.")+"</div>"}
+
+function vUsers(){return head("People","Customers, mechanics and the admin account.",btn("adduser","+ Add user"))+tbl(["Name","Username","Role","Phone","Care Club","Vehicles","Jobs"],D.t.users.map(function(u){
+  return "<tr><td>"+esc(u.name)+"</td><td>"+esc(u.username)+"</td><td>"+u.role+"</td><td>"+esc(u.phone||"-")+"</td><td>"+(u.plan?u.plan+" until "+u.planExp:"-")+"</td><td>"+D.t.vehicles.filter(function(v){return v.uid===u.id}).length+"</td><td>"+D.t.jobs.filter(function(j){return j.uid===u.id||j.mech===u.id}).length+"</td></tr>"}),"")}
+
+function er(){var P={users:[10,10],notifs:[10,175],logs:[10,260],vehicles:[290,10],jobs:[290,175],catalog:[570,10],invoices:[570,108],feedback:[570,278],parts:[570,364]},B={},cols=function(t){return SCH[t].split(", ").map(function(c){return c.split(" ")[0]})};
+  Object.keys(P).forEach(function(t){B[t]={x:P[t][0],y:P[t][1],w:220,h:28+cols(t).length*12}});
+  var s='<svg viewBox="0 0 800 465" width="100%" style="min-width:760px" role="img" aria-label="Entity relationship diagram">';
+  FK.forEach(function(f){var m=f.match(/(\w+)\((\w+)\)>(\w+)/),a=B[m[1]],b=B[m[3]];s+='<line x1="'+(a.x+110)+'" y1="'+(a.y+a.h/2)+'" x2="'+(b.x+110)+'" y2="'+(b.y+b.h/2)+'" stroke="#8895a5" stroke-width="1.6" stroke-dasharray="5 4"/>'});
+  Object.keys(P).forEach(function(t){var b=B[t];s+='<rect x="'+b.x+'" y="'+b.y+'" width="220" height="'+b.h+'" fill="#fcfcfa" stroke="#1c3d6e" stroke-width="1.5"/><rect x="'+b.x+'" y="'+b.y+'" width="220" height="20" fill="#1c3d6e"/><text x="'+(b.x+8)+'" y="'+(b.y+14)+'" fill="#fff" font-size="12" font-weight="700">'+t+"</text>"+
+    cols(t).map(function(c,i){var k=c==="id"?"PK ":FK.some(function(f){return f.indexOf(t+"("+c+")")===0})?"FK ":"   ";return '<text x="'+(b.x+8)+'" y="'+(b.y+34+i*12)+'" font-size="10" fill="'+(k==="   "?"#16202b":"#1c3d6e")+'" font-weight="'+(k==="   "?400:700)+'">'+k+c+"</text>"}).join("")});
+  return '<div class="er">'+s+"</svg></div>"}
+function vDb(){var cols=SCH[tsel].split(", ").map(function(c){return c.split(" ")[0]}),rows=D.t[tsel].slice(-25);
+  return head("Database","Entity relationships, schema and raw rows. Data lives in this browser’s storage, so it is a simulated database, not a server.",btn("sql","Show SQL script","","alt")+btn("json","Show JSON backup","","alt")+btn("reset","Reset demo data","","del"))+er()+
+  '<div class="chips">'+Object.keys(SCH).map(function(t){return '<button data-tb="'+t+'" aria-pressed="'+(t===tsel)+'">'+t+" ("+D.t[t].length+")</button>"}).join("")+"</div>"+
+  '<p class="mt"><b>Schema:</b> '+esc(SCH[tsel])+"</p>"+
+  tbl(cols,rows.map(function(r){return "<tr>"+cols.map(function(c){var v=r[c];if(typeof v==="object"&&v)v=Array.isArray(v)?v.length+" item(s)":"{…}";if(c==="password")v="••••";if(typeof v==="boolean")v=v?"1":"0";return "<td>"+esc(v)+"</td>"}).join("")+"</tr>"}),"This table is empty.")+'<p class="mt">Showing the latest '+rows.length+" rows.</p>"}
+
+var VIEWS={dash:vDash,jobs:vJobs,sched:vSched,veh:vVeh,parts:vParts,bill:vBill,rem:vRem,rep:vRep,users:vUsers,db:vDb};
+function countUp(){var red=matchMedia("(prefers-reduced-motion:reduce)").matches;document.querySelectorAll("[data-n]").forEach(function(e){var n=+e.dataset.n,p=e.dataset.p||"",t0=null,dec=n%1!==0;
+  function f(t){if(!t0)t0=t;var k=red?1:Math.min(1,(t-t0)/1100),v=n*(1-Math.pow(1-k,3));e.textContent=p+(dec?v.toFixed(1):Math.round(v).toLocaleString("en-IN"));if(k<1)requestAnimationFrame(f)}requestAnimationFrame(f)})}
+function anim(){countUp();requestAnimationFrame(function(){requestAnimationFrame(function(){
+  document.querySelectorAll("[data-h]").forEach(function(e){e.style.height=e.dataset.h+"%"});
+  document.querySelectorAll("[data-w]").forEach(function(e){e.style.width=e.dataset.w+"%"});
+  document.querySelectorAll("li[data-on]").forEach(function(e){e.classList.add("on")})})})}
+function bellUpd(){var n=D.t.notifs.filter(function(x){return x.uid===me.id&&!x.seen}).length;$("bell").innerHTML="🔔"+(n?"<b>"+n+"</b>":"");$("bell").classList.toggle("ring",n>0)}
+function render(){$("main").innerHTML=VIEWS[view]();anim();bellUpd()}
+function show(v){var f=function(){view=v;document.querySelectorAll("#nav button").forEach(function(b){b.setAttribute("aria-selected",b.dataset.nav===v)});render();window.scrollTo(0,0)};
+  if(document.startViewTransition&&!matchMedia("(prefers-reduced-motion:reduce)").matches)document.startViewTransition(f);else f()}
+
+/* ---------- actions ---------- */
+function invHTML(i){var j=get("jobs",i.jid),v=get("vehicles",j.vid),c=get("catalog",j.svc),u=get("users",j.uid),L=function(n,q,a){return "<tr><td>"+n+"</td><td>"+q+"</td><td class='num'>"+a+"</td></tr>"};
+  return '<div id="invp" class="inv"><h4>Tax invoice INV-'+pad(i.id,4)+'</h4><p class="mt">Vehicle Service Centre · Bengaluru<br>Date '+i.date+" · Job card JC-"+pad(j.id,4)+"</p><p><b>"+esc(u.name)+"</b><br>"+esc(v.model)+" · "+esc(v.reg)+"</p>"+
+  "<table><thead><tr><th>Item</th><th>Qty</th><th class='num'>Amount</th></tr></thead><tbody>"+L(esc(c.name)+" (labour, "+v.type+")",1,inr(j.labour))+
+  (j.appr==="Approved"?j.extra.map(function(x){return L(esc(x.n)+" (approved extra)",1,inr(x.c))}).join(""):"")+(j.pickup?L("Pickup and drop",1,inr(PICK)):"")+
+  j.parts.map(function(p){return L(esc(p.name),p.qty,inr(p.qty*p.price))}).join("")+(i.disc?L("Care Club discount on labour","",'−'+inr(i.disc)):"")+L("GST 18%","",inr(i.gst))+
+  "<tr class='tot'><td colspan='2'>Total</td><td class='num'>"+inr(i.total)+"</td></tr></tbody></table><p><span class='stamp "+(i.paid?"s4":"s3")+"'>"+(i.paid?"Paid · "+esc(i.mode):"Payment due")+"</span></p>"+(j.warr?'<p class="mt">Warranty on workmanship until '+j.warr+"</p>":"")+"</div>"}
+function sqlText(){var o="-- Vehicle Service and Maintenance Management System\n";
+  Object.keys(SCH).forEach(function(t){o+="CREATE TABLE "+t+" ("+SCH[t]+");\n"});
+  FK.forEach(function(f){var m=f.match(/(\w+)\((\w+)\)>(\w+)/);o+="ALTER TABLE "+m[1]+" ADD FOREIGN KEY ("+m[2]+") REFERENCES "+m[3]+"(id);\n"});
+  Object.keys(SCH).forEach(function(t){var cols=SCH[t].split(", ").map(function(c){return c.split(" ")[0]});
+    D.t[t].forEach(function(r){o+="INSERT INTO "+t+" ("+cols.join(", ")+") VALUES ("+cols.map(function(c){var v=r[c];if(v==null)return "NULL";if(typeof v==="number")return v;if(typeof v==="boolean")return v?1:0;if(typeof v==="object")v=JSON.stringify(v);return "'"+String(v).replace(/'/g,"''")+"'"}).join(", ")+");\n"})});return o}
+function codeBox(title,txt){modal(title,'<textarea class="code" readonly id="cbx">'+esc(txt)+"</textarea><p class='mt'>Copy this text into a .sql or .json file.</p>","Copy",function(){$("cbx").select();try{navigator.clipboard.writeText(txt)}catch(e){try{document.execCommand("copy")}catch(e2){}}toast("Copied");return false})}
+function slotOpts(date){return SLOTS.map(function(sl){var n=D.t.jobs.filter(function(j){return j.date===date&&j.slot===sl&&j.status!=="Cancelled"}).length;return[sl,sl+(n>=CAP?" (full)":" ("+(CAP-n)+" free)")]})}
+function bookDlg(vid,sid){var V=sv();if(!V.length){toast("Add a vehicle first");return}var today=iso(new Date());
+  modal("New service booking",'<div class="fg">'+fld("Vehicle","vid",{sel:V.map(function(v){return[v.id,v.reg+" – "+v.model]}),v:vid})+fld("Service","svc",{sel:D.t.catalog.map(function(c){return[c.id,c.name+" – from "+inr(c.price)]}),v:sid})+fld("Preferred date","date",{t:"date",v:today,min:today})+fld("Time slot","slot",{sel:slotOpts(today)})+fld("Pickup and drop ("+inr(PICK)+")","pickup",{sel:[[0,"No, I will bring it"],[1,"Yes, collect my vehicle"]]})+"</div>"+fld("What is the problem? (optional)","issue",{t:"area",req:false}),"Confirm booking",function(f){
+    var v=get("vehicles",+f.vid),c=get("catalog",+f.svc);if(slotOpts(f.date).find(function(x){return x[0]===f.slot})[1].indexOf("full")>-1){toast("That slot is full. Pick another.");return false}
+    var j=ins("jobs",{vid:v.id,uid:v.uid,svc:c.id,mech:0,date:f.date,slot:f.slot,pickup:+f.pickup,issue:f.issue,status:"Booked",odoIn:v.odo,labour:lab(c,v),extra:[],appr:"",insp:null,parts:[],notes:"",warr:""});
+    log("Booked JC-"+pad(j.id,4));note(v.uid,"Booking JC-"+pad(j.id,4)+" confirmed for "+f.date+" at "+f.slot+".");noteAdmin("New booking JC-"+pad(j.id,4)+" for "+v.reg+".");toast("Booking confirmed: JC-"+pad(j.id,4));show("jobs")});
+  $("mb").querySelector("[name=date]").onchange=function(e){var s=$("mb").querySelector("[name=slot]");s.innerHTML=slotOpts(e.target.value).map(function(x){return '<option value="'+x[0]+'">'+x[1]+"</option>"}).join("")}}
+var A={
+book:function(id,b){bookDlg(id||undefined,b.dataset.s)},
+addveh:function(){var a=me.role==="admin";modal("Add vehicle",'<div class="fg">'+(a?fld("Owner","uid",{sel:D.t.users.filter(function(u){return u.role==="customer"}).map(function(u){return[u.id,u.name]})}):"")+fld("Registration no.","reg",{ph:"KA01AB1234"})+fld("Type","type",{sel:Object.keys(MUL).map(function(k){return[k,k]}),v:"Car"})+fld("Make and model","model")+fld("Year","year",{t:"number",min:1980})+fld("Fuel","fuel",{sel:[["Petrol","Petrol"],["Diesel","Diesel"],["CNG","CNG"],["Electric","Electric"]]})+fld("Odometer (km)","odo",{t:"number",min:0})+fld("Insurance expiry","ins",{t:"date",req:false})+fld("PUC expiry","puc",{t:"date",req:false})+'</div><p class="mt">Labour price scales with type: bikes 0.5×, cars 1×, SUVs 1.3×, trucks 1.8×.</p>',"Save vehicle",function(f){
+  var reg=f.reg.toUpperCase().replace(/\s/g,"");if(D.t.vehicles.some(function(v){return v.reg===reg})){toast("That registration number already exists");return false}
+  ins("vehicles",{uid:a?+f.uid:me.id,reg:reg,type:f.type,model:f.model,year:+f.year,fuel:f.fuel,odo:+f.odo,ins:f.ins,puc:f.puc});log("Added vehicle "+reg);toast("Vehicle added");render()})},
+delveh:function(id){if(D.t.jobs.some(function(j){return j.vid===id})){toast("This vehicle has service history and cannot be deleted");return}ask("Delete this vehicle?",function(){del("vehicles",id);render()})},
+hist:function(id){var v=get("vehicles",id),J=D.t.jobs.filter(function(j){return j.vid===id}).sort(function(a,b){return b.date.localeCompare(a.date)}),tot=sum(D.t.invoices.filter(function(i){return i.paid&&J.some(function(j){return j.id===i.jid})}),function(i){return i.total});
+  modal("Service history · "+v.reg,"<p>"+esc(v.model)+" · "+v.odo.toLocaleString("en-IN")+" km · "+J.length+" jobs · "+inr(tot)+" spent</p>"+tbl(["Date","Service","Status","Km","Warranty"],J.map(function(j){return "<tr><td>"+j.date+"</td><td>"+esc(get("catalog",j.svc).name)+'</td><td><span class="tag s'+ST.indexOf(j.status)+'">'+j.status+"</span></td><td>"+j.odoIn.toLocaleString("en-IN")+"</td><td>"+(j.warr||"-")+"</td></tr>"}),"No jobs yet."))},
+addpart:function(){modal("Add spare part",'<div class="fg">'+fld("Part name","name")+fld("Price (₹)","price",{t:"number",min:0})+fld("Opening stock","stock",{t:"number",min:0})+fld("Reorder level","reorder",{t:"number",min:0})+"</div>","Save part",function(f){ins("parts",{name:f.name,price:+f.price,stock:+f.stock,reorder:+f.reorder});log("Added part "+f.name);render()})},
+restock:function(id){var p=get("parts",id);modal("Restock "+p.name,fld("Quantity received","q",{t:"number",min:1}),"Add stock",function(f){upd("parts",id,{stock:p.stock+ +f.q});log("Restocked "+p.name+" +"+f.q);toast("Stock updated");render()})},
+adduser:function(){modal("Add user",'<div class="fg">'+fld("Full name","name")+fld("Username","u")+fld("Password","p")+fld("Phone","phone",{req:false})+fld("Role","role",{sel:[["customer","Customer"],["mechanic","Mechanic"]]})+"</div>","Create user",function(f){
+  if(D.t.users.some(function(u){return u.username===f.u.toLowerCase()})){toast("Username already taken");return false}ins("users",{name:f.name,username:f.u.toLowerCase(),password:f.p,role:f.role,phone:f.phone,plan:"",planExp:""});log("Added user "+f.u);render()})},
+join:function(){modal("Care Club",'<p>Pick a plan for one year. The discount applies to labour on every invoice.</p>'+fld("Plan","plan",{sel:[["Silver","Silver – "+inr(999)+" · 10% off labour"],["Gold","Gold – "+inr(1999)+" · 20% off labour"]]}),"Join now",function(f){upd("users",me.id,{plan:f.plan,planExp:iso(addM(new Date(),12))});me=get("users",me.id);log("Joined Care Club "+f.plan);confetti();toast("Welcome to the Care Club");render()})},
+assign:function(id){modal("Assign mechanic",fld("Mechanic","m",{sel:D.t.users.filter(function(u){return u.role==="mechanic"}).map(function(u){return[u.id,u.name]}),v:get("jobs",id).mech}),"Assign",function(f){var j=get("jobs",id);upd("jobs",id,{mech:+f.m});note(+f.m,"You have been assigned JC-"+pad(id,4)+".");note(j.uid,"A mechanic has been assigned to JC-"+pad(id,4)+".");log("Assigned JC-"+pad(id,4));toast("Mechanic assigned");render()})},
+checkin:function(id){var j=get("jobs",id);upd("jobs",id,{status:"Inspection"});note(j.uid,"Your vehicle was checked in for JC-"+pad(id,4)+".");note(j.mech,"JC-"+pad(id,4)+" is ready for inspection.");log("Checked in JC-"+pad(id,4));toast("Vehicle checked in");render()},
+inspect:function(id){modal("Inspection · JC-"+pad(id,4),'<div class="fg">'+CHK.map(function(n,i){return fld(n,"c"+i,{sel:[["OK","OK"],["Attention","Needs attention"],["Urgent","Urgent"]]})}).join("")+"</div><p class='mt' style='margin-top:12px'>Found extra work? Add an estimate and the customer will be asked to approve it.</p><div class='fg'>"+fld("Extra work (optional)","en",{req:false,ph:"e.g. Replace brake disc"})+fld("Estimate (₹)","ec",{t:"number",min:0,req:false})+"</div>","Save inspection",function(f){
+  var j=get("jobs",id),lv=CHK.map(function(n,i){return f["c"+i]}),p={insp:mkInsp(lv)};
+  if(f.en&&+f.ec>0){p.extra=[{n:f.en,c:+f.ec}];p.appr="";p.status="Approval";note(j.uid,"Estimate of "+inr(+f.ec)+" for extra work on JC-"+pad(id,4)+" needs your approval.")}else{p.status="Repairing";note(j.uid,"Inspection finished on JC-"+pad(id,4)+". Work has started.")}
+  upd("jobs",id,p);log("Inspected JC-"+pad(id,4));toast(p.status==="Approval"?"Sent to customer for approval":"Inspection saved");render()})},
+approve:function(id){var j=get("jobs",id);upd("jobs",id,{appr:"Approved",status:"Repairing"});note(j.mech,"Customer approved the extra work on JC-"+pad(id,4)+".");noteAdmin("Estimate approved on JC-"+pad(id,4)+".");log("Approved estimate JC-"+pad(id,4));toast("Approved. Work will continue.");render()},
+decline:function(id){var j=get("jobs",id);ask("Decline the extra work? The base service will still go ahead.",function(){upd("jobs",id,{appr:"Declined",status:"Repairing"});note(j.mech,"Customer declined the extra work on JC-"+pad(id,4)+".");log("Declined estimate JC-"+pad(id,4));render()})},
+usepart:function(id){modal("Part used on JC-"+pad(id,4),'<div class="fg">'+fld("Part","pid",{sel:D.t.parts.map(function(p){return[p.id,p.name+" ("+p.stock+" in stock)"]})})+fld("Quantity","q",{t:"number",min:1,v:1})+"</div>","Add to job",function(f){
+  var p=get("parts",+f.pid),q=+f.q,j=get("jobs",id);if(q>p.stock){toast("Only "+p.stock+" in stock");return false}
+  j.parts.push({pid:p.id,name:p.name,qty:q,price:p.price});upd("parts",p.id,{stock:p.stock-q});if(p.stock-q<=p.reorder)noteAdmin(p.name+" is low on stock ("+(p.stock-q)+" left).");log("Used "+q+" × "+p.name+" on JC-"+pad(id,4));render()})},
+ready:function(id){modal("Mark JC-"+pad(id,4)+" ready",fld("Quality-check note for the customer (optional)","n",{t:"area",req:false}),"Mark ready",function(f){var j=get("jobs",id);upd("jobs",id,{status:"Ready",notes:f.n});mkInv(j,false);note(j.uid,"JC-"+pad(id,4)+" is ready for pickup. Invoice generated.");noteAdmin("JC-"+pad(id,4)+" is ready. Collect payment on pickup.");log("JC-"+pad(id,4)+" ready");toast("Invoice created");render()})},
+deliver:function(id){var i=D.t.invoices.find(function(x){return x.jid===id});modal("Collect "+inr(i.total),fld("Payment mode","mode",{sel:[["Cash","Cash"],["UPI","UPI"],["Card","Card"]]}),"Paid, deliver",function(f){var j=get("jobs",id);upd("invoices",i.id,{paid:true,mode:f.mode});upd("jobs",id,{status:"Delivered",warr:iso(addD(new Date(),90))});note(j.uid,"Thank you! JC-"+pad(id,4)+" delivered. Warranty runs for 90 days.");log("Delivered JC-"+pad(id,4));confetti();toast("Vehicle delivered");render()})},
+cancel:function(id){ask("Cancel this booking?",function(){upd("jobs",id,{status:"Cancelled"});log("Cancelled JC-"+pad(id,4));render()})},
+rate:function(id){modal("Rate this service",'<div class="fg">'+fld("Rating","r",{sel:[[5,"5 – Excellent"],[4,"4 – Good"],[3,"3 – Average"],[2,"2 – Poor"],[1,"1 – Very poor"]]})+"</div>"+fld("Comment (optional)","t",{t:"area",req:false}),"Submit",function(f){ins("feedback",{jid:id,rating:+f.r,text:f.t});if(+f.r===5)confetti();toast("Thanks for the feedback");render()})},
+inv:function(id){modal("Invoice",invHTML(get("invoices",id)),"Print",function(){window.print();return false})},
+print:function(){window.print()},
+sql:function(){codeBox("SQL script",sqlText())},
+json:function(){codeBox("JSON backup",JSON.stringify(D.t,null,1))},
+reset:function(){ask("Erase everything and restore the demo data?",function(){var u=me.username;seed();me=D.t.users.find(function(x){return x.username===u})||D.t.users[0];render();toast("Demo data restored")})}
+};
+$("bell").onclick=function(){var L=D.t.notifs.filter(function(x){return x.uid===me.id}).slice(-12).reverse();
+  modal("Notifications",'<div class="nl">'+(L.length?L.map(function(x){return '<p class="'+(x.seen?"":"new")+'">'+esc(x.text)+"<small>"+x.ts+"</small></p>"}).join(""):"<p>No notifications yet.</p>")+"</div>");
+  D.t.notifs.forEach(function(x){if(x.uid===me.id)x.seen=true});save();bellUpd()};
+document.addEventListener("click",function(e){var t=e.target,b=t.closest("[data-a]");if(b){A[b.dataset.a](+b.dataset.id,b);return}
+  if((b=t.closest("[data-nav]")))show(b.dataset.nav);
+  if((b=t.closest("[data-fil]"))){fil=b.dataset.fil;render()}
+  if((b=t.closest("[data-tb]"))){tsel=b.dataset.tb;render()}
+  if(t===$("dlg"))$("dlg").close()});
+document.addEventListener("change",function(e){var t=e.target,id=t.dataset&&t.dataset.odo;if(id){upd("vehicles",+id,{odo:+t.value||0});toast("Odometer updated");render()}if(t.id==="rf"||t.id==="rt"){if(t.id==="rf")rf=t.value;else rt=t.value;render()}});
+document.addEventListener("input",function(e){if(e.target.id==="qs"){qs=e.target.value;$("jl").innerHTML=jobList();anim()}});
+$("mf").addEventListener("submit",function(e){e.preventDefault();if(!cb)return;var f={};new FormData(e.target).forEach(function(v,k){f[k]=v});if(cb(f)!==false)$("dlg").close()});
+$("mx").onclick=function(){$("dlg").close()};
+
+/* ---------- welcome and sign-in ---------- */
+function enter(u){me=u;log("Signed in");$("who").textContent=u.name+" · "+u.role;
+  $("nav").innerHTML=NAV[u.role].map(function(n){return '<button data-nav="'+n[0]+'">'+n[1]+"</button>"}).join("");
+  $("app").classList.remove("hidden");fil="all";qs="";view="dash";document.querySelectorAll("#nav button")[0].setAttribute("aria-selected","true");render();$("welcome").classList.add("gone");
+  var n=D.t.notifs.filter(function(x){return x.uid===u.id&&!x.seen}).length;if(n)setTimeout(function(){toast("You have "+n+" new notification"+(n>1?"s":""))},1100)}
+document.querySelectorAll("[data-wt]").forEach(function(b){b.onclick=function(){document.querySelectorAll("[data-wt]").forEach(function(x){x.setAttribute("aria-selected",x===b)});$("lf").classList.toggle("hidden",b.dataset.wt!=="lf");$("rf").classList.toggle("hidden",b.dataset.wt!=="rf")}});
+document.querySelectorAll("[data-fill]").forEach(function(b){b.onclick=function(){var p=b.dataset.fill.split("|");$("lf").elements["u"].value=p[0];$("lf").elements["p"].value=p[1];$("lerr").textContent=""}});
+$("scene").onclick=function(){var c=$("car");c.classList.remove("hop");void c.getBoundingClientRect();c.classList.add("hop");toast("Beep beep!")};
+$("lf").addEventListener("submit",function(e){e.preventDefault();var u=D.t.users.find(function(x){return x.username===$("lf").elements["u"].value.trim().toLowerCase()&&x.password===$("lf").elements["p"].value});
+  if(!u){$("lerr").textContent="Username or password is incorrect.";return}$("lerr").textContent="";enter(u)});
+$("rf").addEventListener("submit",function(e){e.preventDefault();var f=$("rf"),un=f.elements["u"].value.trim().toLowerCase();
+  if(D.t.users.some(function(x){return x.username===un})){$("rerr").textContent="That username is taken. Try another.";return}
+  enter(ins("users",{name:f.elements["name"].value.trim(),username:un,password:f.elements["p"].value,role:"customer",phone:f.elements["phone"].value,plan:"",planExp:""}));f.reset()});
+$("out").onclick=function(){log("Signed out");me=null;$("app").classList.add("hidden");$("welcome").classList.remove("gone");$("lf").reset()};
+load();
+})();
+</script>
+</body>
+</html>
